@@ -85,12 +85,14 @@ The repository includes `render.yaml` for the FastAPI service and
   ["https://credify.vercel.app"]
   ```
 
-4. Copy the deployed API URL and verify `/api/health` returns `status: ok`.
+4. In the Render service environment settings, set `DATABASE_URL` to the
+  **Internal Database URL** from your Render PostgreSQL database. The backend
+  accepts Render's `postgres://` URL and uses the bundled `psycopg` driver.
+5. Copy the deployed API URL and verify `/api/health` returns `status: ok`.
 
-The free Render service uses the repository SQLite file on ephemeral storage. It is
-appropriate for a demo, but user accounts, scans, and seeded data can reset after a
-redeploy or restart. Use a paid persistent disk and set `DATABASE_URL`, or migrate to
-PostgreSQL, before relying on it for permanent data.
+The free Render service uses the repository SQLite file on ephemeral storage when
+`DATABASE_URL` is not set. Use PostgreSQL before relying on user accounts, scans,
+and seeded data for permanent hosted storage.
 
 ### 2. Deploy the frontend to Vercel
 

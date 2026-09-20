@@ -128,6 +128,59 @@ SAFE_SAMPLES: list[tuple[str, str]] = [
     ("upi", "Your UPI mandate for the SIP of Rs 4,999 will be debited on the 5th. No action needed."),
 ]
 
+REQUESTED_HISTORY_SAMPLES: list[tuple[str, str]] = [
+    ("message", "Your SBI account will be blocked today. Complete KYC at http://sbi-verify-kyc.example"),
+    ("message", "Congratulations, you won Rs 25 lakh. Pay Rs 4,999 processing fee to claim."),
+    ("message", "Your parcel is held by customs. Pay Rs 850 immediately to release it."),
+    ("message", "Earn Rs 5,000 daily by rating hotels. Pay Rs 2,000 to activate your account."),
+    ("message", "Your electricity connection will be disconnected tonight. Verify your bill using this link."),
+    ("message", "Invest Rs 10,000 today and receive guaranteed 300% returns in one week."),
+    ("message", "Your bank card is suspended. Send your CVV and OTP to reactivate it."),
+    ("message", "Your loan is approved. Pay a Rs 1,200 release fee first."),
+    ("message", "Your KYC expires in 30 minutes. Click here and enter your Aadhaar and PIN."),
+    ("message", "You have won a new car. Pay road tax before delivery."),
+    ("message", "Your refund is waiting. Approve this UPI collect request and enter your PIN."),
+    ("message", "Scan this QR code to receive your cashback."),
+    ("message", "Send Rs 1 to verify your UPI account and receive Rs 10,000."),
+    ("message", "Your Amazon account will close unless you verify your card here."),
+    ("message", "Urgent: police complaint registered against your mobile number. Call now."),
+    ("call", "Do not disconnect. I am from the cybercrime department. Transfer money to a safe RBI account."),
+    ("call", "Your parcel contains illegal items. Stay on video call while we verify your identity."),
+    ("call", "This is your bank. Tell me the OTP sent to your phone to stop a transaction."),
+    ("call", "Install AnyDesk so our technician can remove the virus from your computer."),
+    ("call", "Your SIM will be blocked. Confirm your Aadhaar number and bank details."),
+    ("email", "From: alerts@secure-sbi.example, your account will be suspended. Verify immediately."),
+    ("email", "You have won an investment prize. Send your bank details to receive it."),
+    ("email", "Your tax refund is pending. Confirm PAN and account information at this link."),
+    ("email", "Your Microsoft subscription expired. Pay immediately to avoid account closure."),
+    ("email", "Your invoice is overdue. Download the attached payment file and transfer funds."),
+    ("url", "http://secure-bank-login.example/verify"),
+    ("url", "http://sbi-refund-claim.example/login"),
+    ("url", "http://192.0.2.44/bank/update"),
+    ("url", "http://free-prize-claim.example/winner"),
+    ("url", "http://kyc-expire-now.example/aadhaar"),
+    ("upi", "Refund collect request received. Approve it and enter your UPI PIN."),
+    ("upi", "Pay Rs 5,000 to winner.claim@upi to release your lottery prize."),
+    ("upi", "Send Rs 1 verification payment to receive Rs 20,000 cashback."),
+    ("upi", "A government fine is pending. Transfer money to rbi.verify@upi."),
+    ("upi", "Your buyer sent a payment request. Approve it to receive the money."),
+    ("message", "Your OTP is 482913. Never share this OTP with anyone."),
+    ("message", "Rs 2,500 was debited from your account at a grocery store."),
+    ("message", "Your train ticket is confirmed. PNR 4523118090."),
+    ("message", "Your food order is out for delivery and will arrive soon."),
+    ("message", "Your electricity bill is due on the 20th. Pay through the official app."),
+    ("message", "Your salary of Rs 48,000 has been credited to your account."),
+    ("message", "Your appointment is confirmed for Monday at 10 AM."),
+    ("message", "Your recharge was successful. Validity is 28 days."),
+    ("call", "Hello, this is the clinic calling to remind you about tomorrow's appointment."),
+    ("call", "Your courier has arrived at the building entrance. Please collect it."),
+    ("call", "This is your insurance branch. Your policy document is ready for collection."),
+    ("email", "Your online order has shipped and will arrive on Friday."),
+    ("email", "Your password was changed successfully. Contact support if you did not make this change."),
+    ("url", "https://www.irctc.co.in"),
+    ("url", "https://www.cybercrime.gov.in"),
+]
+
 INTEL_SEED: list[tuple[str, str, str, int]] = [
     ("domain", "sbi-kyc-verify.info", "high", 47),
     ("domain", "hdfc-secure-login.xyz", "high", 41),
@@ -379,6 +432,30 @@ def seed_scans(db, users: dict[str, User]) -> tuple[int, dict[str, int]]:
     return TARGET_SCANS, verdict_counts
 
 
+def seed_requested_history(db, user: User) -> int:
+    """Store the requested examples separately, one per day for the demo user."""
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    for index, (channel, content) in enumerate(REQUESTED_HISTORY_SAMPLES):
+        result = fusion.analyze(content, channel, db=None)
+        db.add(
+            Scan(
+                id=result["scan_id"],
+                user_id=user.id,
+                channel=channel,
+                content=content[:2000],
+                risk_score=result["risk_score"],
+                verdict=result["verdict"],
+                category=result["category"],
+                confidence=result["confidence"],
+                reasons=result["reasons"],
+                entities=result["entities"],
+                created_at=now - timedelta(days=len(REQUESTED_HISTORY_SAMPLES) - 1 - index, hours=12),
+            )
+        )
+    db.commit()
+    return len(REQUESTED_HISTORY_SAMPLES)
+
+
 def seed_reports(db, users: dict[str, User]) -> int:
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     total = 0
@@ -418,6 +495,9 @@ def main() -> None:
         print(f"  analysing {TARGET_SCANS} sample messages through the live pipeline...")
         count, verdicts = seed_scans(db, users)
         print(f"  scans             {count}  {verdicts}")
+
+        requested_count = seed_requested_history(db, users["user"])
+        print(f"  requested history {requested_count} (one per day for demo user)")
 
         reports = seed_reports(db, users)
         print(f"  community reports {reports}")
