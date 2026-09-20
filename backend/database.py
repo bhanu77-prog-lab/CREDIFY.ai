@@ -1,6 +1,7 @@
 """SQLAlchemy engine, session factory and declarative base."""
 
 from collections.abc import Generator
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
@@ -12,6 +13,11 @@ if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql+psycopg://", 1)
 elif database_url.startswith("postgresql://"):
     database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+
+if database_url.startswith("postgresql"):
+    parts = urlsplit(database_url)
+    query = [(key, value) for key, value in parse_qsl(parts.query) if key != "pgbouncer"]
+    database_url = urlunsplit(parts._replace(query=urlencode(query)))
 
 connect_args = (
     {"check_same_thread": False}
