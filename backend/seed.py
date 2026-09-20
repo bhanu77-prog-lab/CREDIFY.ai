@@ -476,31 +476,47 @@ def seed_reports(db, users: dict[str, User]) -> int:
     return total
 
 
+def seed_demo_data(db, clear_existing: bool = False) -> None:
+    if clear_existing:
+        print("Clearing existing data...")
+        reset(db)
+
+    users = seed_users(db)
+    print(f"  users            {len(users)}")
+
+    seed_intel(db)
+    print(f"  threat indicators {len(INTEL_SEED)}")
+
+    seed_alerts(db)
+    print(f"  active alerts     {len(ALERTS)}")
+
+    print(f"  analysing {TARGET_SCANS} sample messages through the live pipeline...")
+    count, verdicts = seed_scans(db, users)
+    print(f"  scans             {count}  {verdicts}")
+
+    requested_count = seed_requested_history(db, users["user"])
+    print(f"  requested history {requested_count} (one per day for demo user)")
+
+    reports = seed_reports(db, users)
+    print(f"  community reports {reports}")
+
+
+def seed_if_empty() -> bool:
+    db = SessionLocal()
+    try:
+        if db.query(User).count():
+            return False
+        seed_demo_data(db)
+        return True
+    finally:
+        db.close()
+
+
 def main() -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        print("Clearing existing data...")
-        reset(db)
-
-        users = seed_users(db)
-        print(f"  users            {len(users)}")
-
-        seed_intel(db)
-        print(f"  threat indicators {len(INTEL_SEED)}")
-
-        seed_alerts(db)
-        print(f"  active alerts     {len(ALERTS)}")
-
-        print(f"  analysing {TARGET_SCANS} sample messages through the live pipeline...")
-        count, verdicts = seed_scans(db, users)
-        print(f"  scans             {count}  {verdicts}")
-
-        requested_count = seed_requested_history(db, users["user"])
-        print(f"  requested history {requested_count} (one per day for demo user)")
-
-        reports = seed_reports(db, users)
-        print(f"  community reports {reports}")
+        seed_demo_data(db, clear_existing=True)
 
         print("\nSeed complete. Demo accounts:")
         print("  admin@scamshield.in   / Admin@123   (admin)")

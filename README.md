@@ -88,7 +88,10 @@ The repository includes `render.yaml` for the FastAPI service and
 4. In the Render service environment settings, set `DATABASE_URL` to the
   **Internal Database URL** from your Render PostgreSQL database. The backend
   accepts Render's `postgres://` URL and uses the bundled `psycopg` driver.
-5. Copy the deployed API URL and verify `/api/health` returns `status: ok`.
+5. For a fresh demo database, set `SEED_ON_STARTUP=true` before the first deploy.
+  It seeds the demo accounts, dashboard data, and requested dated scans only when
+  the database is empty. Set it to `false` after the first successful deploy.
+6. Copy the deployed API URL and verify `/api/health` returns `status: ok`.
 
 The free Render service uses the repository SQLite file on ephemeral storage when
 `DATABASE_URL` is not set. Use PostgreSQL before relying on user accounts, scans,

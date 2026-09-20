@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     app_name: str = "CREDIFY.ai"
     app_version: str = "1.0.0"
     debug: bool = True
+    seed_on_startup: bool = False
 
     # SQLite lives beside the backend package so `uvicorn main:app` and
     # `python -m backend.seed` agree on the same file.
