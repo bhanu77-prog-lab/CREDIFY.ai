@@ -348,13 +348,15 @@ def seed_users(db) -> dict[str, User]:
     ]
     created: dict[str, User] = {}
     for email, password, name, role in people:
-        user = User(
-            email=email,
-            password_hash=hash_password(password),
-            full_name=name,
-            role=role,
-        )
-        db.add(user)
+        user = db.query(User).filter(User.email == email).first()
+        if user is None:
+            user = User(
+                email=email,
+                password_hash=hash_password(password),
+                full_name=name,
+                role=role,
+            )
+            db.add(user)
         created[role] = user
     db.commit()
     for user in created.values():
@@ -504,7 +506,7 @@ def seed_demo_data(db, clear_existing: bool = False) -> None:
 def seed_if_empty() -> bool:
     db = SessionLocal()
     try:
-        if db.query(User).count():
+        if db.query(Scan).count():
             return False
         seed_demo_data(db)
         return True
