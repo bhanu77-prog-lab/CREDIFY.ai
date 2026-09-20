@@ -1,0 +1,130 @@
+/* CREDIFY.ai design tokens.
+   Concept: "trusted security console" - deep navy, one confident cyan accent,
+   and a strict semantic risk palette that is never used for decoration. */
+
+:root {
+  /* brand */
+  --navy-900: #0b1220;
+  --navy-800: #111c2e;
+  --navy-700: #18263c;
+  --navy-600: #22344f;
+  --cyan-500: #12b5cb;
+  --cyan-400: #2ecfe4;
+  --cyan-600: #0e93a5;
+
+  /* semantic risk - reserved exclusively for risk communication */
+  --safe: #1fa971;
+  --safe-bg: rgba(31, 169, 113, 0.12);
+  --warn: #e0a106;
+  --warn-bg: rgba(224, 161, 6, 0.14);
+  --danger: #dc3b3b;
+  --danger-bg: rgba(220, 59, 59, 0.12);
+
+  /* Filled risk buttons need their own pair: the hue that reads well as a thin
+     badge outline is too light to carry white label text. These are the fills
+     plus the text colour that clears WCAG AA against them, in each theme. */
+  --danger-solid: #c62828;
+  --safe-solid: #147a52;
+  --on-solid: #ffffff;
+
+  /* neutrals (light) */
+  --bg: #f7f9fc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #0f172a;
+  --text-muted: #64748b;
+
+  /* accent surfaces derived from the brand */
+  --accent: var(--cyan-600);
+  --accent-strong: var(--cyan-500);
+  --accent-bg: rgba(18, 181, 203, 0.1);
+  --accent-border: rgba(18, 181, 203, 0.32);
+  --on-accent: #ffffff;
+
+  /* type */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --fs-12: 0.75rem;
+  --fs-13: 0.8125rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-20: 1.25rem;
+  --fs-24: 1.5rem;
+  --fs-30: 1.875rem;
+  --fs-38: 2.375rem;
+  --fs-48: 3rem;
+
+  /* space */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-24: 96px;
+
+  /* radii */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 999px;
+
+  /* elevation */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --shadow-glow: 0 0 0 4px rgba(18, 181, 203, 0.15);
+
+  /* layout */
+  --content-max: 1200px;
+  --nav-h: 68px;
+  --sidebar-w: 248px;
+  --sidebar-w-collapsed: 72px;
+
+  /* motion */
+  --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --dur-slow: 250ms;
+}
+
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #111c2e;
+  --surface-2: #18263c;
+  --border: #22344f;
+  --border-strong: #2f4767;
+  --text: #e8eef6;
+  --text-muted: #93a4bc;
+
+  --accent: var(--cyan-400);
+  --accent-strong: var(--cyan-400);
+  --accent-bg: rgba(46, 207, 228, 0.12);
+  --accent-border: rgba(46, 207, 228, 0.34);
+  --on-accent: #ffffff;
+
+  /* Risk hues are lifted so they stay legible on a dark ground. */
+  --safe: #35c98d;
+  --safe-bg: rgba(53, 201, 141, 0.16);
+  --warn: #f0b429;
+  --warn-bg: rgba(240, 180, 41, 0.16);
+  --danger: #ff6b6b;
+  --danger-bg: rgba(255, 107, 107, 0.16);
+
+  /* Inverted in dark: light fills, dark label text. */
+  --danger-solid: #ff6b6b;
+  --safe-solid: #35c98d;
+  --on-solid: #0b1220;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 0 4px rgba(46, 207, 228, 0.22);
+}
