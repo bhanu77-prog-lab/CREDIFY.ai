@@ -365,6 +365,8 @@ def seed_users(db) -> dict[str, User]:
 
 
 def seed_intel(db) -> None:
+    if db.query(ThreatIntel).count():
+        return
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     for indicator_type, value, level, count in INTEL_SEED:
         db.add(
@@ -382,6 +384,8 @@ def seed_intel(db) -> None:
 
 
 def seed_alerts(db) -> None:
+    if db.query(Alert).count():
+        return
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     for index, (title, body, severity) in enumerate(ALERTS):
         db.add(
@@ -459,6 +463,8 @@ def seed_requested_history(db, user: User) -> int:
 
 
 def seed_reports(db, users: dict[str, User]) -> int:
+    if db.query(CommunityReport).count():
+        return 0
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     total = 0
     for index, (channel, content, category) in enumerate(COMMUNITY_SAMPLES):
