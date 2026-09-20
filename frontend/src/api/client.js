@@ -8,7 +8,9 @@ const TOKEN_KEY = 'scamshield-token'
 
 // Same-origin by default so the Vite development proxy works with zero configuration.
 // VITE_API_URL overrides it if the API lives elsewhere.
-const BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
+const BASE = (
+  import.meta.env.VITE_API_URL || 'https://credify-api-vwrw.onrender.com'
+).replace(/\/$/, '')
 
 export class ApiError extends Error {
   constructor(message, { status = 0, offline = false, details = null } = {}) {
