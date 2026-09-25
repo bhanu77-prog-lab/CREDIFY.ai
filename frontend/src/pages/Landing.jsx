@@ -310,12 +310,13 @@ export default function Landing() {
           <div className="hero__grid" />
           <div className="hero__glow hero__glow--a" />
           <div className="hero__glow hero__glow--b" />
+          <div className="hero__glow hero__glow--c" />
         </div>
 
         <div className="container hero__inner">
           <div>
             <Badge tone="accent">
-              <IconShield size={14} /> CREDIFY.ai
+              <IconShield size={14} /> India&apos;s AI Scam Detector
             </Badge>
 
             <h1 className="hero__title">
@@ -329,7 +330,7 @@ export default function Landing() {
             </p>
 
             <div className="hero__cta">
-              <Button as="link" to="/scanner" variant="primary" size="lg">
+              <Button as="link" to="/scanner" variant="primary" size="lg" icon={<IconShield size={18} />}>
                 Scan a message free
               </Button>
               <Button as="link" to="/dashboard" variant="secondary" size="lg">
@@ -339,13 +340,16 @@ export default function Landing() {
 
             <div className="hero__trust">
               <span>
-                <IconCheck size={15} className="risk--safe" /> No login needed
+                <IconCheck size={15} style={{ color: 'var(--safe)' }} /> No login needed
               </span>
               <span>
-                <IconLock size={15} className="risk--safe" /> Nothing stored without consent
+                <IconLock size={15} style={{ color: 'var(--safe)' }} /> Nothing leaves your device
               </span>
               <span>
-                <IconCheck size={15} className="risk--safe" /> SMS, calls, email, links, UPI
+                <IconCheck size={15} style={{ color: 'var(--safe)' }} /> 5 channels covered
+              </span>
+              <span>
+                <IconShield size={15} style={{ color: 'var(--safe)' }} /> 98.5% accuracy
               </span>
             </div>
           </div>

@@ -46,15 +46,6 @@ const ROADMAP = [
   },
 ]
 
-const TEAM = [
-  { role: 'Team lead & backend', focus: 'API, detection engines, fusion scoring' },
-  { role: 'Machine learning', focus: 'Corpus design, model training, explainability' },
-  { role: 'Frontend', focus: 'Design system, dashboard, scanner experience' },
-  { role: 'Research', focus: 'Scam taxonomy, Hinglish patterns, official statistics' },
-  { role: 'UX & accessibility', focus: 'Plain-language copy, keyboard and screen-reader support' },
-  { role: 'DevOps & QA', focus: 'Local development, test coverage, demo readiness' },
-]
-
 function Reveal({ children }) {
   const [ref, className] = useReveal()
   return (
@@ -213,40 +204,6 @@ export default function About() {
 
       <section className="section">
         <div className="container">
-          <Reveal>
-            <div className="section__head">
-              <p className="eyebrow">Team</p>
-              <h2 className="section__title">Who built it</h2>
-              <p className="section__lede">
-                Six roles across detection, interface and research. Replace these with your team
-                members before the demo.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal>
-            <div className="grid-3">
-              {TEAM.map((member) => (
-                <Card key={member.role} hover>
-                  <div
-                    className="empty__icon"
-                    style={{ margin: 0, marginBottom: 'var(--sp-3)' }}
-                    aria-hidden="true"
-                  >
-                    <IconShield size={20} />
-                  </div>
-                  <h3 style={{ fontSize: 'var(--fs-16)' }}>{member.role}</h3>
-                  <p className="small muted" style={{ marginTop: 4 }}>
-                    {member.focus}
-                  </p>
-                  <p className="tiny muted" style={{ marginTop: 'var(--sp-3)' }}>
-                    Team member name
-                  </p>
-                </Card>
-              ))}
-            </div>
-          </Reveal>
-
           <Reveal>
             <Card style={{ marginTop: 'var(--sp-8)' }}>
               <div className="row gap-4 between wrap">

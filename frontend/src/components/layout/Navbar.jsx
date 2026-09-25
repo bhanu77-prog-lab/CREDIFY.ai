@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import Button from '../ui/Button'
-import { IconLogout, IconMenu, IconMoon, IconSun, IconX } from '../ui/Icons'
+import LanguageSwitcher from '../ui/LanguageSwitcher'
+import { IconKeyboard, IconLogout, IconMenu, IconMoon, IconSun, IconX } from '../ui/Icons'
 
-const LINKS = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/#how', label: 'How it works' },
-  { to: '/#features', label: 'Features' },
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/about', label: 'About' },
+// Labels are resolved at render time via t() so language changes are reactive.
+const LINK_KEYS = [
+  { to: '/', key: 'nav.home', end: true },
+  { to: '/#how', key: 'nav.howItWorks' },
+  { to: '/#features', key: 'nav.features' },
+  { to: '/dashboard', key: 'nav.dashboard' },
+  { to: '/about', key: 'nav.about' },
 ]
 
 export function Logo({ size = 26 }) {
@@ -72,12 +75,13 @@ export function ThemeToggle({ size = 'md' }) {
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ onOpenShortcuts }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const { isAuthenticated, user, logout } = useAuth()
   const location = useLocation()
+  const { t } = useTranslation()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -124,18 +128,18 @@ export default function Navbar() {
         <Logo />
 
         <nav className={`nav__links ${open ? 'nav__links--open' : ''}`.trim()} aria-label="Main">
-          {LINKS.map((link) =>
+          {LINK_KEYS.map((link) =>
             link.to.includes('#') ? (
               <a
-                key={link.label}
+                key={link.key}
                 className={`nav__link ${activeSection === link.to.slice(2) ? 'nav__link--active' : ''}`.trim()}
                 href={link.to}
               >
-                {link.label}
+                {t(link.key)}
               </a>
             ) : (
               <NavLink
-                key={link.label}
+                key={link.key}
                 to={link.to}
                 end={link.end}
                 className={({ isActive }) =>
@@ -148,7 +152,7 @@ export default function Navbar() {
                   }`.trim()
                 }
               >
-                {link.label}
+                {t(link.key)}
               </NavLink>
             ),
           )}
@@ -158,20 +162,30 @@ export default function Navbar() {
           <div className="nav__menu-actions">
             {isAuthenticated ? (
               <Button variant="secondary" size="md" fullWidth icon={<IconLogout size={17} />} onClick={logout}>
-                Sign out
+                {t('nav.signOut')}
               </Button>
             ) : (
               <Button as="link" to="/login" variant="secondary" size="md" fullWidth>
-                Sign in
+                {t('nav.signIn')}
               </Button>
             )}
             <Button as="link" to="/scanner" variant="primary" size="md" fullWidth>
-              Scan a message
+              {t('nav.scanMessage')}
             </Button>
           </div>
         </nav>
 
         <div className="nav__actions">
+          <LanguageSwitcher />
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<IconKeyboard size={17} />}
+            onClick={onOpenShortcuts}
+            aria-label={t('nav.keyboardShortcuts')}
+            title={`${t('nav.keyboardShortcuts')} (?)`}
+            className="nav__shortcuts-btn"
+          />
           <ThemeToggle />
           <div className="nav__bar-actions">
             {isAuthenticated ? (
@@ -184,16 +198,16 @@ export default function Navbar() {
                   size="sm"
                   icon={<IconLogout size={17} />}
                   onClick={logout}
-                  aria-label="Sign out"
+                  aria-label={t('nav.signOut')}
                 />
               </>
             ) : (
               <Button as="link" to="/login" variant="ghost" size="sm">
-                Sign in
+                {t('nav.signIn')}
               </Button>
             )}
             <Button as="link" to="/scanner" variant="primary" size="sm">
-              Scan a message
+              {t('nav.scanMessage')}
             </Button>
           </div>
           <Button
@@ -202,7 +216,7 @@ export default function Navbar() {
             size="sm"
             icon={open ? <IconX size={18} /> : <IconMenu size={18} />}
             onClick={() => setOpen((value) => !value)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-label={open ? t('nav.closeMenu', 'Close menu') : t('nav.openMenu', 'Open menu')}
             aria-expanded={open}
           />
         </div>

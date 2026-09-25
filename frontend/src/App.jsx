@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import Footer from './components/layout/Footer'
 import Navbar from './components/layout/Navbar'
@@ -17,14 +18,15 @@ import ThreatIntel from './pages/ThreatIntel'
 import Button from './components/ui/Button'
 import EmptyState from './components/ui/EmptyState'
 import { IconSearch } from './components/ui/Icons'
+import KeyboardShortcutsPanel from './components/ui/KeyboardShortcutsPanel'
 
 const SIDEBAR_KEY = 'scamshield-sidebar-collapsed'
 
 /** Marketing shell: full-width page with the public navbar and footer. */
-function SiteLayout({ children, showFooter = true }) {
+function SiteLayout({ children, showFooter = true, onOpenShortcuts }) {
   return (
     <>
-      <Navbar />
+      <Navbar onOpenShortcuts={onOpenShortcuts} />
       <main id="main">{children}</main>
       {showFooter && <Footer />}
     </>
@@ -32,7 +34,7 @@ function SiteLayout({ children, showFooter = true }) {
 }
 
 /** Workspace shell: navbar plus a collapsible sidebar. */
-function AppLayout({ children }) {
+function AppLayout({ children, onOpenShortcuts }) {
   const [collapsed, setCollapsed] = useState(() => {
     try {
       return localStorage.getItem(SIDEBAR_KEY) === '1'
@@ -57,7 +59,7 @@ function AppLayout({ children }) {
 
   return (
     <>
-      <Navbar />
+      <Navbar onOpenShortcuts={onOpenShortcuts} />
       <div className="shell">
         <Sidebar
           collapsed={collapsed}
@@ -76,11 +78,12 @@ function AppLayout({ children }) {
 function RequireAuth({ children }) {
   const { isAuthenticated, loading } = useAuth()
   const location = useLocation()
+  const { t } = useTranslation()
 
   if (loading) {
     return (
       <div className="page">
-        <EmptyState title="Checking your session…" text="One moment." />
+        <EmptyState title={t('common.checkingSession')} text={t('common.oneMoment')} />
       </div>
     )
   }
@@ -91,15 +94,16 @@ function RequireAuth({ children }) {
 }
 
 function NotFound() {
+  const { t } = useTranslation()
   return (
     <div className="page">
       <EmptyState
         icon={<IconSearch size={22} />}
-        title="Page not found"
-        text="That page does not exist. Try the scanner or the dashboard."
+        title={t('common.notFoundTitle')}
+        text={t('common.notFoundText')}
         action={
           <Button as="link" to="/" variant="primary">
-            Back to home
+            {t('common.back')}
           </Button>
         }
       />
@@ -126,17 +130,40 @@ function ScrollManager() {
 }
 
 export default function App() {
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
+
+  const openShortcuts = useCallback(() => setShortcutsOpen(true), [])
+  const closeShortcuts = useCallback(() => setShortcutsOpen(false), [])
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      // Only fire when ? is pressed outside of any editable field, and no
+      // modifier is held (so it does not interfere with Ctrl+/ or similar).
+      if (event.key !== '?') return
+      if (event.ctrlKey || event.metaKey || event.altKey) return
+      const tag = document.activeElement?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable) return
+      event.preventDefault()
+      setShortcutsOpen((prev) => !prev)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   return (
     <>
       <a className="skip-link" href="#main">
+        {/* useTranslation not used here intentionally — this is a static
+            accessibility anchor rendered before any JS i18n is ready */}
         Skip to main content
       </a>
+      <KeyboardShortcutsPanel open={shortcutsOpen} onClose={closeShortcuts} />
       <ScrollManager />
       <Routes>
         <Route
           path="/"
           element={
-            <SiteLayout>
+            <SiteLayout onOpenShortcuts={openShortcuts}>
               <Landing />
             </SiteLayout>
           }
@@ -144,7 +171,7 @@ export default function App() {
         <Route
           path="/about"
           element={
-            <SiteLayout>
+            <SiteLayout onOpenShortcuts={openShortcuts}>
               <About />
             </SiteLayout>
           }
@@ -152,7 +179,7 @@ export default function App() {
         <Route
           path="/login"
           element={
-            <SiteLayout showFooter={false}>
+            <SiteLayout showFooter={false} onOpenShortcuts={openShortcuts}>
               <Login />
             </SiteLayout>
           }
@@ -160,7 +187,7 @@ export default function App() {
         <Route
           path="/scanner"
           element={
-            <AppLayout>
+            <AppLayout onOpenShortcuts={openShortcuts}>
               <Scanner />
             </AppLayout>
           }
@@ -168,7 +195,7 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <AppLayout>
+            <AppLayout onOpenShortcuts={openShortcuts}>
               <Dashboard />
             </AppLayout>
           }
@@ -176,7 +203,7 @@ export default function App() {
         <Route
           path="/history"
           element={
-            <AppLayout>
+            <AppLayout onOpenShortcuts={openShortcuts}>
               <RequireAuth>
                 <History />
               </RequireAuth>
@@ -186,7 +213,7 @@ export default function App() {
         <Route
           path="/community"
           element={
-            <AppLayout>
+            <AppLayout onOpenShortcuts={openShortcuts}>
               <Community />
             </AppLayout>
           }
@@ -194,7 +221,7 @@ export default function App() {
         <Route
           path="/intel"
           element={
-            <AppLayout>
+            <AppLayout onOpenShortcuts={openShortcuts}>
               <ThreatIntel />
             </AppLayout>
           }
@@ -202,7 +229,7 @@ export default function App() {
         <Route
           path="/gallery"
           element={
-            <SiteLayout>
+            <SiteLayout onOpenShortcuts={openShortcuts}>
               <Gallery />
             </SiteLayout>
           }
@@ -210,7 +237,7 @@ export default function App() {
         <Route
           path="*"
           element={
-            <SiteLayout>
+            <SiteLayout onOpenShortcuts={openShortcuts}>
               <NotFound />
             </SiteLayout>
           }

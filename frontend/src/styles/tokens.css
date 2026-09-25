@@ -1,6 +1,7 @@
 /* CREDIFY.ai design tokens.
    Concept: "trusted security console" - deep navy, one confident cyan accent,
-   and a strict semantic risk palette that is never used for decoration. */
+   a secondary purple for AI/ML indicators, and a strict semantic risk palette
+   that is never used for decoration. */
 
 :root {
   /* brand */
@@ -11,6 +12,12 @@
   --cyan-500: #12b5cb;
   --cyan-400: #2ecfe4;
   --cyan-600: #0e93a5;
+
+  /* AI/ML indicator — used sparingly for "smart" elements */
+  --purple-500: #7c5cd8;
+  --purple-400: #9b7ef0;
+  --purple-bg: rgba(124, 92, 216, 0.1);
+  --purple-border: rgba(124, 92, 216, 0.28);
 
   /* semantic risk - reserved exclusively for risk communication */
   --safe: #1fa971;
@@ -28,13 +35,15 @@
   --on-solid: #ffffff;
 
   /* neutrals (light) */
-  --bg: #f7f9fc;
+  --bg: #f4f7fb;
   --surface: #ffffff;
-  --surface-2: #f1f5f9;
+  --surface-2: #f0f4f9;
+  --surface-3: #e8eef6;
   --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --border-strong: #c8d4e4;
   --text: #0f172a;
   --text-muted: #64748b;
+  --text-subtle: #94a3b8;
 
   /* accent surfaces derived from the brand */
   --accent: var(--cyan-600);
@@ -47,6 +56,7 @@
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
+  --fs-11: 0.6875rem;
   --fs-12: 0.75rem;
   --fs-13: 0.8125rem;
   --fs-14: 0.875rem;
@@ -74,57 +84,75 @@
   --r-md: 12px;
   --r-lg: 16px;
   --r-xl: 24px;
+  --r-2xl: 32px;
   --r-full: 999px;
 
   /* elevation */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
-  --shadow-glow: 0 0 0 4px rgba(18, 181, 203, 0.15);
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.16), 0 8px 20px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 0 3px rgba(18, 181, 203, 0.18), 0 0 16px rgba(18, 181, 203, 0.1);
+  --shadow-glow-danger: 0 0 0 3px rgba(220, 59, 59, 0.18), 0 0 16px rgba(220, 59, 59, 0.1);
+  --shadow-glow-safe: 0 0 0 3px rgba(31, 169, 113, 0.18), 0 0 16px rgba(31, 169, 113, 0.1);
 
   /* layout */
   --content-max: 1200px;
   --nav-h: 68px;
-  --sidebar-w: 248px;
+  --sidebar-w: 252px;
   --sidebar-w-collapsed: 72px;
 
   /* motion */
   --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 120ms;
   --dur: 180ms;
-  --dur-slow: 250ms;
+  --dur-slow: 260ms;
+  --dur-slower: 400ms;
 }
 
 [data-theme="dark"] {
-  --bg: #0b1220;
-  --surface: #111c2e;
-  --surface-2: #18263c;
-  --border: #22344f;
-  --border-strong: #2f4767;
+  --bg: #090f1a;
+  --surface: #0f1a2e;
+  --surface-2: #162233;
+  --surface-3: #1e2f45;
+  --border: #1e3050;
+  --border-strong: #2a4268;
   --text: #e8eef6;
-  --text-muted: #93a4bc;
+  --text-muted: #8fa3bc;
+  --text-subtle: #5c7a9a;
 
   --accent: var(--cyan-400);
   --accent-strong: var(--cyan-400);
   --accent-bg: rgba(46, 207, 228, 0.12);
-  --accent-border: rgba(46, 207, 228, 0.34);
+  --accent-border: rgba(46, 207, 228, 0.28);
   --on-accent: #ffffff;
+
+  --purple-bg: rgba(155, 126, 240, 0.14);
+  --purple-border: rgba(155, 126, 240, 0.3);
 
   /* Risk hues are lifted so they stay legible on a dark ground. */
   --safe: #35c98d;
-  --safe-bg: rgba(53, 201, 141, 0.16);
+  --safe-bg: rgba(53, 201, 141, 0.15);
   --warn: #f0b429;
-  --warn-bg: rgba(240, 180, 41, 0.16);
+  --warn-bg: rgba(240, 180, 41, 0.15);
   --danger: #ff6b6b;
-  --danger-bg: rgba(255, 107, 107, 0.16);
+  --danger-bg: rgba(255, 107, 107, 0.15);
 
   /* Inverted in dark: light fills, dark label text. */
   --danger-solid: #ff6b6b;
   --safe-solid: #35c98d;
   --on-solid: #0b1220;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 4px rgba(46, 207, 228, 0.22);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 28px 60px rgba(0, 0, 0, 0.65), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 0 3px rgba(46, 207, 228, 0.22), 0 0 16px rgba(46, 207, 228, 0.12);
+  --shadow-glow-danger: 0 0 0 3px rgba(255, 107, 107, 0.22), 0 0 16px rgba(255, 107, 107, 0.12);
+  --shadow-glow-safe: 0 0 0 3px rgba(53, 201, 141, 0.22), 0 0 16px rgba(53, 201, 141, 0.12);
 }

@@ -121,20 +121,29 @@ export default function History() {
         title="Your scans"
         subtitle="Everything you have checked while signed in. Content is truncated to 2,000 characters before storage."
         actions={
-          <Button
-            variant="secondary"
-            icon={<IconDownload size={17} />}
-            onClick={exportCsv}
-            loading={exporting}
-            disabled={!data.total}
-          >
-            Export CSV
-          </Button>
+          <div className="row gap-2">
+            <Button
+              variant="secondary"
+              icon={<IconDownload size={17} />}
+              onClick={exportCsv}
+              loading={exporting}
+              disabled={!data.total}
+            >
+              Export CSV
+            </Button>
+          </div>
         }
       />
 
       <Card padded={false} style={{ marginBottom: 'var(--sp-4)' }}>
-        <div style={{ padding: 'var(--sp-4)' }}>
+        <div
+          style={{
+            padding: 'var(--sp-4)',
+            borderBottom: '1px solid var(--border)',
+            background: 'var(--surface-2)',
+            borderRadius: 'var(--r-lg) var(--r-lg) 0 0',
+          }}
+        >
           <div className="filter-bar" style={{ marginBottom: 0 }}>
             <div style={{ minWidth: 220, flex: 1, maxWidth: 320 }}>
               <Input

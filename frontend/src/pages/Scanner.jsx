@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import api, { ApiError } from '../api/client'
 import PageHeader from '../components/layout/PageHeader'
@@ -99,6 +100,26 @@ const SAMPLES = {
 function LoadingResult() {
   return (
     <Card padded={false}>
+      {/* Indeterminate progress bar at top */}
+      <div
+        style={{
+          height: 3,
+          background: 'var(--surface-2)',
+          borderRadius: 'var(--r-full) var(--r-full) 0 0',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            height: '100%',
+            background: 'linear-gradient(90deg, var(--cyan-600), var(--cyan-400), var(--cyan-600))',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 1400ms ease infinite',
+            borderRadius: 'var(--r-full)',
+            width: '60%',
+          }}
+        />
+      </div>
       <div style={{ padding: 'var(--sp-6)', borderBottom: '1px solid var(--border)' }}>
         <div className="row gap-6 wrap">
           <Skeleton width={190} height={150} radius="var(--r-lg)" />
@@ -131,6 +152,7 @@ export default function Scanner() {
   const resultRef = useRef(null)
   const toast = useToast()
   const { isAuthenticated } = useAuth()
+  const { t } = useTranslation()
 
   const config = channelConfig(channel)
 
@@ -141,7 +163,7 @@ export default function Scanner() {
   const analyze = useCallback(async () => {
     const text = content.trim()
     if (!text) {
-      setError('Paste the message you want checked first.')
+      setError(t('scanner.emptyError'))
       textareaRef.current?.focus()
       return
     }
@@ -158,14 +180,14 @@ export default function Scanner() {
     } catch (caught) {
       const message =
         caught instanceof ApiError && caught.offline
-          ? 'Cannot reach the CREDIFY.ai server. Start the backend on port 8000 and try again.'
-          : caught?.message || 'Something went wrong while analysing that.'
+          ? t('scanner.offlineError')
+          : caught?.message || t('scanner.analysisFailedText')
       setError(message)
-      toast.error('Analysis failed', message)
+      toast.error(t('scanner.analysisFailedTitle'), message)
     } finally {
       setLoading(false)
     }
-  }, [content, channel, toast])
+  }, [content, channel, toast, t])
 
   const onKeyDown = (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
@@ -191,9 +213,9 @@ export default function Scanner() {
         content: content.trim().slice(0, 5000),
         claimed_category: result.category,
       })
-      toast.success('Thank you', 'Your report helps warn other people about this scam.')
+      toast.success(t('scanner.reportSuccessTitle'), t('scanner.reportSuccessText'))
     } catch (caught) {
-      toast.error('Could not submit', caught?.message || 'Please try again in a moment.')
+      toast.error(t('scanner.reportFailedTitle'), caught?.message || t('common.retry'))
     } finally {
       setReporting(false)
     }
@@ -221,18 +243,18 @@ export default function Scanner() {
     ]
     try {
       await navigator.clipboard.writeText(lines.join('\n'))
-      toast.success('Copied', 'The full report is on your clipboard.')
+      toast.success(t('scanner.copiedTitle'), t('scanner.copiedText'))
     } catch {
-      toast.error('Could not copy', 'Your browser blocked clipboard access.')
+      toast.error(t('scanner.copyFailedTitle'), t('scanner.copyFailedText'))
     }
   }
 
   return (
     <div className="page">
       <PageHeader
-        eyebrow="Scanner"
-        title="Check anything suspicious"
-        subtitle="Paste it exactly as you received it. The more you include — links, amounts, phone numbers — the more we can check."
+        eyebrow={t('scanner.eyebrow')}
+        title={t('scanner.title')}
+        subtitle={t('scanner.subtitle')}
       />
 
       <div className="scanner-grid">
@@ -262,13 +284,13 @@ export default function Scanner() {
 
               <div className="row between gap-3 wrap" style={{ marginTop: 'var(--sp-4)' }}>
                 <span className="tiny muted">
-                  Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to check
-                  {!isAuthenticated && ' · Sign in to keep a history of your scans'}
+                  {t('scanner.ctaHint')}
+                  {!isAuthenticated && t('scanner.ctaHintAuth')}
                 </span>
                 <div className="row gap-2">
                   {content && (
                     <Button variant="ghost" onClick={() => setContent('')}>
-                      Clear
+                      {t('scanner.clearButton')}
                     </Button>
                   )}
                   <Button
@@ -278,7 +300,7 @@ export default function Scanner() {
                     loading={loading}
                     icon={<IconShield size={18} />}
                   >
-                    Check for scam
+                    {t('scanner.checkButton')}
                   </Button>
                 </div>
               </div>
@@ -302,8 +324,8 @@ export default function Scanner() {
               <Card>
                 <EmptyState
                   icon={<IconShield size={22} />}
-                  title="Your result will appear here"
-                  text="Pick a channel above, paste what you received, and we will show the risk score, the exact reasons behind it, and what to do next."
+                  title={t('scanner.resultPlaceholderTitle')}
+                  text={t('scanner.resultPlaceholderText')}
                 />
               </Card>
             )}
@@ -313,8 +335,8 @@ export default function Scanner() {
         <div className="stack gap-4">
           <Card padded={false}>
             <CardHead
-              title="Try a sample"
-              subtitle={`Real ${config.label.toLowerCase()} examples — two scams and one genuine.`}
+              title={t('scanner.trySample')}
+              subtitle={t('scanner.trySampleSubtitle', { channel: config.label.toLowerCase() })}
             />
             <CardBody tight>
               <div className="sample-list">
@@ -352,25 +374,45 @@ export default function Scanner() {
 
           <Card>
             <div className="row gap-3" style={{ alignItems: 'flex-start' }}>
-              <span className="risk--warn" aria-hidden="true">
-                <IconAlert size={20} />
-              </span>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 'var(--r-md)',
+                  background: 'var(--warn-bg)',
+                  border: '1px solid color-mix(in srgb, var(--warn) 30%, transparent)',
+                  display: 'grid',
+                  placeItems: 'center',
+                  color: 'var(--warn)',
+                  flex: 'none',
+                }}
+                aria-hidden="true"
+              >
+                <IconAlert size={18} />
+              </div>
               <div>
-                <p className="strong small">Your privacy</p>
+                <p className="strong small">{t('scanner.privacyTitle')}</p>
                 <p className="small muted" style={{ marginTop: 4 }}>
-                  Scan text is truncated to 2,000 characters before it is stored, and it is never
-                  sent to any outside service — everything runs on this machine. Use the landing-page
-                  scanner if you would rather nothing be stored at all.
+                  {t('scanner.privacyText')}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card>
-            <p className="strong small">If money has already gone</p>
+          <Card
+            style={{
+              background: 'linear-gradient(135deg, var(--danger-bg), var(--surface))',
+              borderColor: 'color-mix(in srgb, var(--danger) 25%, var(--border))',
+            }}
+          >
+            <div className="row gap-2" style={{ marginBottom: 'var(--sp-3)' }}>
+              <span className="risk--danger" aria-hidden="true">
+                <IconAlert size={18} />
+              </span>
+              <p className="strong small" style={{ color: 'var(--danger)' }}>{t('scanner.emergencyTitle')}</p>
+            </div>
             <p className="small muted" style={{ marginTop: 4 }}>
-              Call <strong>1930</strong> or report at cybercrime.gov.in immediately. Accounts can
-              often still be frozen in the first few hours — after that it becomes very difficult.
+              {t('scanner.emergencyText')}
             </p>
             <Button
               as="a"
@@ -381,7 +423,7 @@ export default function Scanner() {
               fullWidth
               style={{ marginTop: 'var(--sp-3)' }}
             >
-              Report at cybercrime.gov.in
+              {t('scanner.emergencyButton')}
             </Button>
           </Card>
         </div>

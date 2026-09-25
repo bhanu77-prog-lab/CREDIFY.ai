@@ -103,14 +103,31 @@ export default function Login() {
     <div className="auth">
       <div className="auth__form-side">
         <div className="auth__form">
-          <h1 style={{ fontSize: 'var(--fs-30)' }}>
-            {mode === 'login' ? 'Sign in' : 'Create your account'}
-          </h1>
-          <p className="muted small" style={{ marginTop: 'var(--sp-2)' }}>
-            {mode === 'login'
-              ? 'Signing in is optional — the scanner works without it. It just keeps your history.'
-              : 'It takes a few seconds and keeps your scan history in one place.'}
-          </p>
+          <div style={{ marginBottom: 'var(--sp-6)' }}>
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 'var(--r-md)',
+                background: 'var(--accent-bg)',
+                border: '1px solid var(--accent-border)',
+                display: 'grid',
+                placeItems: 'center',
+                color: 'var(--accent)',
+                marginBottom: 'var(--sp-4)',
+              }}
+            >
+              <IconShield size={24} />
+            </div>
+            <h1 style={{ fontSize: 'var(--fs-30)' }}>
+              {mode === 'login' ? 'Welcome back' : 'Create your account'}
+            </h1>
+            <p className="muted small" style={{ marginTop: 'var(--sp-2)' }}>
+              {mode === 'login'
+                ? 'Signing in is optional — the scanner works without it. It just keeps your history.'
+                : 'It takes a few seconds and keeps your scan history in one place.'}
+            </p>
+          </div>
 
           <form onSubmit={submit} className="stack gap-4" style={{ marginTop: 'var(--sp-8)' }}>
             {mode === 'register' && (
@@ -155,20 +172,30 @@ export default function Login() {
             </Button>
           </form>
 
-          <p className="small muted text-center" style={{ marginTop: 'var(--sp-4)' }}>
-            {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-            <button
-              type="button"
-              className="chip"
-              style={{ border: 0, background: 'none', color: 'var(--accent)', padding: 0 }}
-              onClick={() => {
-                setMode(mode === 'login' ? 'register' : 'login')
-                setErrors({})
-              }}
-            >
-              {mode === 'login' ? 'Create one' : 'Sign in'}
-            </button>
-          </p>
+          <div
+            style={{
+              marginTop: 'var(--sp-4)',
+              padding: 'var(--sp-4)',
+              borderRadius: 'var(--r-md)',
+              background: 'var(--surface-2)',
+              border: '1px solid var(--border)',
+              textAlign: 'center',
+            }}
+          >
+            <p className="small muted">
+              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              <button
+                type="button"
+                style={{ border: 0, background: 'none', color: 'var(--accent)', padding: 0, fontWeight: 600, cursor: 'pointer', fontSize: 'inherit' }}
+                onClick={() => {
+                  setMode(mode === 'login' ? 'register' : 'login')
+                  setErrors({})
+                }}
+              >
+                {mode === 'login' ? 'Create one free →' : 'Sign in →'}
+              </button>
+            </p>
+          </div>
 
           <Card tight style={{ marginTop: 'var(--sp-8)' }}>
             <p className="tiny muted" style={{ marginBottom: 'var(--sp-3)' }}>
@@ -196,6 +223,26 @@ export default function Login() {
 
       <aside className="auth__aside">
         <div>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--sp-2)',
+              padding: '6px 14px',
+              borderRadius: 'var(--r-full)',
+              background: 'rgba(46,207,228,0.12)',
+              border: '1px solid rgba(46,207,228,0.28)',
+              color: 'var(--cyan-400)',
+              fontSize: 'var(--fs-12)',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              marginBottom: 'var(--sp-4)',
+            }}
+          >
+            <IconShield size={13} />
+            CREDIFY.ai
+          </div>
           <h2>Your scans, kept together.</h2>
           <p style={{ color: 'rgba(232,238,246,.8)', marginTop: 'var(--sp-3)' }}>
             An account is not required to check a message. It exists so you can look back at what you

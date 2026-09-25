@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="CREDIFY.ai - paste any suspicious SMS, call, email, link or UPI request and get an instant, explainable risk verdict." />
     <meta name="theme-color" content="#0B1220" />
+
+    <!-- PWA -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CREDIFY.ai" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
     <title>CREDIFY.ai - Know if it's a scam before you pay</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 4 7v9c0 7.2 5 12.6 12 14 7-1.4 12-6.8 12-14V7L16 2Z' fill='%2312B5CB'/%3E%3Cpath d='M11 16.5l3.5 3.5L21 13' stroke='%230B1220' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,6 +20,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <script>
       // Applied before first paint so the page never flashes the wrong theme.
+      // .no-transition is added here and removed after one rAF so the body's
+      // background/color CSS transition does not animate from the default
+      // (unstyled) state into the saved theme on every page load.
       (function () {
         try {
           var saved = localStorage.getItem('scamshield-theme');
@@ -20,6 +31,12 @@
         } catch (e) {
           document.documentElement.setAttribute('data-theme', 'light');
         }
+        document.documentElement.classList.add('no-transition');
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            document.documentElement.classList.remove('no-transition');
+          });
+        });
       })();
     </script>
   </head>

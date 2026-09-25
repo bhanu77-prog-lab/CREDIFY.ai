@@ -28,6 +28,14 @@ body {
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
+/* Applied by the inline script in index.html for exactly one frame on page
+   load so the body transition does not animate from the wrong theme to the
+   correct one before React hydrates. */
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
 #root {
   min-height: 100vh;
   display: flex;
@@ -188,3 +196,147 @@ hr {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================ ANIMATIONS */
+/* Fade-in-up: used by cards, sections, results */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Slide-in from right: used by toasts, drawers */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scale-in: used by modals, popups */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Pulse: used for loading indicators */
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Glow sweep: used on primary CTA hover */
+@keyframes glow-sweep {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Utility animation classes */
+.anim-fade-up {
+  animation: fade-in-up var(--dur-slow) var(--ease) both;
+}
+.anim-fade-up-1 { animation-delay: 60ms; }
+.anim-fade-up-2 { animation-delay: 120ms; }
+.anim-fade-up-3 { animation-delay: 180ms; }
+.anim-fade-up-4 { animation-delay: 240ms; }
+
+.anim-slide-right {
+  animation: slide-in-right var(--dur-slow) var(--ease) both;
+}
+
+.anim-scale-in {
+  animation: scale-in var(--dur-slow) var(--ease-spring) both;
+}
+
+.anim-pulse {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* =========================================================== TEXT STYLES */
+.text-gradient {
+  background: linear-gradient(120deg, var(--cyan-600), var(--cyan-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(120deg, var(--purple-500), var(--purple-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ======================================================== LAYOUT HELPERS */
+.surface-raised {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.inset-panel {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+}
+
+/* Status dot — live indicator */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--safe);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--safe) 25%, transparent);
+  animation: dot-breathe 2s ease-in-out infinite;
+}
+.status-dot--warn {
+  background: var(--warn);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--warn) 25%, transparent);
+}
+.status-dot--danger {
+  background: var(--danger);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 25%, transparent);
+}
+
+/* Keyboard shortcut pill */
+kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  font-size: var(--fs-12);
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+

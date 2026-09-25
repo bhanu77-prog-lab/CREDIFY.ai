@@ -237,3 +237,9 @@ export const IconInbox = (p) => (
     <path d="M3.5 13.5H8l1.2 2.5h5.6l1.2-2.5h4.5" />
   </Svg>
 )
+export const IconKeyboard = (p) => (
+  <Svg {...p}>
+    <rect x="2" y="6" width="20" height="13" rx="2.5" />
+    <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M8 14h8M18 14h.01" />
+  </Svg>
+)

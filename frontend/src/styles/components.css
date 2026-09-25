@@ -225,12 +225,21 @@
   padding: var(--sp-4);
 }
 .card--hover:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   border-color: var(--border-strong);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 .card--flush {
   overflow: hidden;
+}
+.card--accent {
+  border-color: var(--accent-border);
+  background: color-mix(in srgb, var(--accent-bg) 50%, var(--surface));
+}
+.card--glass {
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .card__head {
@@ -394,6 +403,7 @@
   line-height: 1.5;
   border: 1px solid transparent;
   white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 .badge--neutral {
   background: var(--surface-2);
@@ -529,6 +539,19 @@
   white-space: nowrap;
   cursor: pointer;
   transition: all var(--dur) var(--ease);
+  position: relative;
+}
+.tab::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform var(--dur) var(--ease);
 }
 .tab:hover {
   color: var(--text);
@@ -538,6 +561,9 @@
   background: var(--surface);
   color: var(--accent);
   box-shadow: var(--shadow-sm);
+}
+.tab[aria-selected="true"]::after {
+  transform: scaleX(1);
 }
 .tab:focus-visible {
   outline: none;
@@ -706,14 +732,15 @@
   color: var(--text-muted);
 }
 .empty__icon {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
   border-radius: var(--r-full);
-  background: var(--surface-2);
+  background: linear-gradient(135deg, var(--surface-2), var(--surface-3));
   border: 1px solid var(--border);
-  color: var(--text-muted);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
 }
 .empty__title {
   font-size: var(--fs-16);
@@ -722,7 +749,8 @@
 }
 .empty__text {
   font-size: var(--fs-14);
-  max-width: 44ch;
+  max-width: 46ch;
+  line-height: 1.65;
 }
 
 /* ----------------------------------------------------------------- TABLES */
@@ -739,11 +767,11 @@
 }
 .table th {
   text-align: left;
-  font-size: var(--fs-12);
-  font-weight: 600;
+  font-size: var(--fs-11);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  color: var(--text-subtle);
   padding: var(--sp-3) var(--sp-4);
   border-bottom: 1px solid var(--border);
   background: var(--surface-2);
@@ -761,7 +789,7 @@
   transition: background-color var(--dur-fast) var(--ease);
 }
 .table tbody tr:hover {
-  background: var(--surface-2);
+  background: linear-gradient(90deg, var(--accent-bg), transparent 30%);
 }
 .table tbody tr:last-child td {
   border-bottom: 0;
@@ -935,4 +963,196 @@
   height: 1px;
   background: var(--border);
   border: 0;
+}
+
+/* ------------------------------------------------- KEYBOARD SHORTCUTS PANEL */
+.shortcut__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.shortcut__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.shortcut__group-label {
+  font-size: var(--fs-11);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-1);
+}
+
+.shortcut__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-2) 0;
+}
+
+.shortcut__keys {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+.shortcut__key-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* The individual <kbd> chips */
+.shortcut__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+  line-height: 1;
+  box-shadow: 0 1px 0 var(--border-strong);
+}
+
+[data-theme="dark"] .shortcut__key {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.shortcut__plus {
+  font-size: var(--fs-12);
+  color: var(--text-subtle);
+  user-select: none;
+}
+
+.shortcut__desc {
+  font-size: var(--fs-14);
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* Hide the ? button on very small screens where there is no room */
+@media (max-width: 380px) {
+  .nav__shortcuts-btn {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------- LANGUAGE SWITCHER */
+.lang-switcher {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  flex: none;
+}
+
+.lang-switcher__btn {
+  height: 30px;
+  min-width: 32px;
+  padding-inline: var(--sp-2);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.lang-switcher__btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.lang-switcher__btn--active {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.lang-switcher__btn + .lang-switcher__btn {
+  border-left: 1px solid var(--border);
+}
+
+/* ------------------------------------------------------------ PWA BANNER */
+.pwa-banner {
+  position: fixed;
+  bottom: var(--sp-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  width: min(480px, calc(100vw - 2 * var(--sp-4)));
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, .18);
+}
+
+.pwa-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 180px;
+  font-size: var(--fs-13);
+}
+
+.pwa-banner__actions {
+  display: flex;
+  gap: var(--sp-2);
+  flex: none;
+}
+
+.pwa-banner__btn {
+  height: 32px;
+  padding-inline: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: var(--fs-13);
+  font-weight: 600;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.pwa-banner__btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.pwa-banner__btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.pwa-banner__btn--primary:hover {
+  background: var(--accent-hover, var(--accent));
+  opacity: 0.9;
+  color: #fff;
 }
