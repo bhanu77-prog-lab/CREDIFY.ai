@@ -6,7 +6,7 @@ Paste any suspicious SMS, call transcript, email, link, or UPI payment request a
 instant, explainable risk verdict — so people can stop a scam **before** they lose money,
 instead of reporting it after.
 
----
+--- 
 
 ## Why this matters
 
